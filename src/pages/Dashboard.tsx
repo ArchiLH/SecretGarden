@@ -6,6 +6,7 @@ type Plant = {
   humidity: number;
   temperature: number;
   status: string;
+  user_id: string;
 };
 
 export default function Dashboard() {
@@ -19,53 +20,61 @@ export default function Dashboard() {
   }, []);
 
   const loadStats = async () => {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-  if (!user) {
-    return;
-  }
+    if (!user) return;
 
-  const { data, error } = await supabase
-    .from("plants")
-    .select("*")
-    .eq("user_id", user.id);
+    const { data, error } = await supabase
+      .from("plants")
+      .select("*")
+      .eq("user_id", user.id);
 
-  if (error) {
-    console.error(error);
-    return;
-  }
+    if (error) {
+      console.error(error);
+      return;
+    }
 
-  const plants = data || [];
+    const plants = (data as Plant[]) || [];
 
-  setTotalPlants(plants.length);
+    // 📊 TOTAL
+    setTotalPlants(plants.length);
 
-  if (plants.length > 0) {
-    const humidity =
-      plants.reduce((acc, plant) => acc + plant.humidity, 0) /
-      plants.length;
+    if (plants.length > 0) {
+      // 💧 HUMEDAD PROMEDIO
+      const humidity =
+        plants.reduce((acc, plant) => acc + plant.humidity, 0) /
+        plants.length;
 
-    const temperature =
-      plants.reduce((acc, plant) => acc + plant.temperature, 0) /
-      plants.length;
+      // 🌡️ TEMPERATURA PROMEDIO
+      const temperature =
+        plants.reduce((acc, plant) => acc + plant.temperature, 0) /
+        plants.length;
 
-    const healthy = plants.filter(
-      (plant) => plant.status === "Healthy"
-    ).length;
+      // 🌱 SALUDABLES
+      const healthy = plants.filter(
+        (plant) => plant.status === "Healthy"
+      ).length;
 
-    setAvgHumidity(Math.round(humidity));
-    setAvgTemperature(Math.round(temperature));
-    setHealthyPlants(healthy);
-  }
-};
+      setAvgHumidity(Math.round(humidity));
+      setAvgTemperature(Math.round(temperature));
+      setHealthyPlants(healthy);
+    } else {
+      setAvgHumidity(0);
+      setAvgTemperature(0);
+      setHealthyPlants(0);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-5 pb-24">
+      {/* HEADER */}
       <h1 className="text-4xl font-bold mb-6">
         🌱 Secret Garden
       </h1>
 
+      {/* STATS GRID */}
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-slate-800 rounded-2xl p-4">
           <p className="text-slate-400">Total Plantas</p>
