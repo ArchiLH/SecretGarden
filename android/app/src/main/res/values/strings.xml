@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">mi-app</string>
-    <string name="title_activity_main">mi-app</string>
-    <string name="package_name">com.example.app</string>
-    <string name="custom_url_scheme">com.example.app</string>
+    <string name="app_name">Secret Garden</string>
+    <string name="title_activity_main">Secret Garden</string>
+    <string name="package_name">com.secretgarden.app</string>
+    <string name="custom_url_scheme">com.secretgarden.app</string>
 </resources>
